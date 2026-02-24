@@ -1,0 +1,110 @@
+/* ----- VARIABLES ----- */
+:root {
+    /* Colors */
+    --color-primary: #2c3e50;
+    --color-accent: #e74c3c;
+    --color-background: #ecf0f1;
+    --color-text: #2c3e50;
+    --color-board-bg: #fff;
+    --color-cell-boarder: #bdc3c7;
+
+    /* Spacing */
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+
+    /* Layout */
+    --container-width: 400px;
+    --cell-size: 100px;
+    --border-radius: 8px;
+
+    /* Typography */
+    --font-primary: system-ui, -apple-system, sans-serif;
+}
+
+/* ----- RESET / BASE STYLES ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ----- GAME CONTAINER ----- */
+.container {
+    max-width: var(--container-width);
+    width: 90%;
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: var(--space-md);
+    color: var(--color-primary);
+}
+
+/* ----- PLAYER INFO ----- */
+.player-turn {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+/* ----- GAME BOARD ----- */
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, var(--cell-size));
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+}
+
+/* ----- CELLS ----- */
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background-color: var(--color-board-bg);
+    border: 2px solid var(--color-cell-boarder);
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s transform 0.1s;
+}
+
+.cell:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.05);
+}
+
+/* ----- BUTTONS ----- */
+.reset {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reset:hover {
+    background-color: #34495e;
+}

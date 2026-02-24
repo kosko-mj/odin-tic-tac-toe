@@ -1,0 +1,84 @@
+// ====================================
+// DOM ELEMENTS
+// ====================================
+const boardElement = document.querySelector('.board');
+const playerTurnElement = document.querySelector('.player-turn');
+const resetButton = document.querySelector('.reset');
+
+// ====================================
+// GAME STATE
+// ====================================
+const board = ['', '', '', '', '', '', '', '', ''];
+let currentPlayer = 'X';
+let gameActive = true;
+
+// ====================================
+// RENDER BOARD
+// ====================================
+function renderBoard() {
+    // Clear the board element first
+    boardElement.innerHTML = '';
+
+
+// Create 9 cells
+for (let i = 0; i < 9; i++) {
+    // create cell div
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+
+    // Add the marker (X or O) if this cell is taken
+    cell.textContent = board[i];
+
+    // Add click handler
+    cell.addEventListener('click', () => handleCellClick(i));
+
+    // Add to board
+    boardElement.appendChild(cell);
+   }
+}
+
+// ====================================
+// GAME LOGIC
+// ====================================
+function handleCellClick(index) {
+    // check if cell is empty and game is active
+    if (board[index] === '' && gameActive) {
+        // Update board array
+        board[index] = currentPlayer;
+
+        // Update display
+        renderBoard();
+
+        // Switch players
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        playerTurnElement.textContent = `Player ${currentPlayer}'s turn`;
+    }
+}
+
+// ====================================
+// RESET GAME
+// ====================================
+function resetGame() {
+    // Clear board array
+    for (let i = 0; i < 9; i++) {
+        board[i] = '';
+    }
+
+    // Reset game state
+    currentPlayer = 'X';
+    gameActive = true;
+
+    // Update display
+    renderBoard();
+    playerTurnElement.textContent = `Player X's turn`;
+}
+
+// ====================================
+// EVENT LISTENERS
+// ====================================
+resetButton.addEventListener('click', resetGame);
+
+// ====================================
+// INITIALIZE GAME
+// ====================================
+renderBoard();
