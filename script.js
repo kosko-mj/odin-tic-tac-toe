@@ -5,12 +5,23 @@ const boardElement = document.querySelector('.board');
 const playerTurnElement = document.querySelector('.player-turn');
 const resetButton = document.querySelector('.reset');
 
+// Score Elements
+const scoreXElement = document.getElementById('score-x');
+const scoreOElement = document.getElementById('score-o');
+
 // ====================================
 // GAME STATE
 // ====================================
 const board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
+
+// score tracking
+let playerXScore = 0;
+let playerOScore = 0;
+
+const WINNING_SCORE = 3;
+let gameOver = false;
 
 // ====================================
 // RENDER BOARD
@@ -46,24 +57,52 @@ function handleCellClick(index) {
         // Update board array
         board[index] = currentPlayer;
 
-        // Update display
-        renderBoard();
-
         // Check for winner
         const winner = checkWinner();
         if (winner) {
-            // Game over - someone won!
-            playerTurnElement.textContent = `Player ${winner} wins! 🎉`;
-            gameActive = false;
-            // Tie Check
-        } else if (!board.includes('')) {
-            // Board is full an no winner = tie
+            // Update Scores
+            if (winner === 'X') {
+                playerXScore++;
+                scoreXElement.textContent = playerXScore;
+            } else {
+                playerOScore++;
+                scoreOElement.textContent = playerOScore;
+            }
+
+            // Check if someone won the MATCH
+            if (playerXScore === WINNING_SCORE) {
+                playerTurnElement.textContent = `🏆 PLAYER X WINS THE MATCH! 🏆`;
+                gameActive = false;
+                gameOver = true;
+            } else if (playerOScore === WINNING_SCORE) {
+                playerTurnElement.textContent = `🏆 PLAYER O WINS THE MATCH! 🏆`;
+                gameActive = false;
+                gameOver = true;
+            } else {
+                // Just a game win, not match win
+                playerTurnElement.textContent = `Player ${winner} wins this round! 🎉`;
+                gameActive = false; // Game ends, but match continues
+            }
+            
+            // Update display AFTER all logic
+            renderBoard();
+        } 
+        // Tie Check
+        else if (!board.includes('')) {
+            // Board is full and no winner = tie
             playerTurnElement.textContent = `It's a tie! 🤝`;
             gameActive = false;
-        } else {
+            
+            // Update display AFTER all logic
+            renderBoard();
+        } 
+        else {
             // No winner yet, switch players
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             playerTurnElement.textContent = `Player ${currentPlayer}'s turn`;
+            
+            // Update display AFTER all logic
+            renderBoard();
         }
     }
 }
@@ -105,7 +144,20 @@ function resetGame() {
 
     // Update display
     renderBoard();
-    playerTurnElement.textContent = `Player X's turn`;
+   
+    // Check if match is over
+    if (gameOver) {
+        // Match is over - reset everything
+        playerXScore = 0;
+        playerOScore = 0;
+        scoreXElement.textContent = '0';
+        scoreOElement.textContent = '0';
+        gameOver = false;
+        playerTurnElement.textContent = `New match! Player X's turn`;
+    } else {
+        // Just starting a new round in the same match
+        playerTurnElement.textContent = `Player X's turn (Best of ${WINNING_SCORE})`;
+    }
 }
 
 // ====================================

@@ -93,6 +93,23 @@ h1 {
     transform: scale(1.05);
 }
 
+/* ----- SCORE BOARD ----- */
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: var(--space-md);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.score-x {
+    color: var(--color-primary);
+}
+
+.score-o {
+    color: var(--color-accent);
+}
+
 /* ----- BUTTONS ----- */
 .reset {
     background-color: var(--color-primary);
