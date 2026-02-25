@@ -1,15 +1,4 @@
 // ====================================
-// DOM ELEMENTS
-// ====================================
-const boardElement = document.querySelector('.board');
-const playerTurnElement = document.querySelector('.player-turn');
-const resetButton = document.querySelector('.reset');
-
-// Score Elements
-const scoreXElement = document.getElementById('score-x');
-const scoreOElement = document.getElementById('score-o');
-
-// ====================================
 // PLAYER FACTORY
 // ====================================
 function createPlayer(name, marker) {
@@ -79,160 +68,184 @@ const Gameboard = (function() {
     };
 })();
 
+// ====================================
+// DISPLAY CONTROLLER MODULE
+// ====================================
+const DisplayController = (function() {
+    // DOM elements (moved from global scope)
+    const boardElement = document.querySelector('.board');
+    const playerTurnElement = document.querySelector('.player-turn');
+    const resetButton = document.querySelector('.reset');
+    const scoreXElement = document.getElementById('score-x');
+    const scoreOElement = document.getElementById('score-o');
+
+    // Private render function
+    function renderBoard() {
+        boardElement.innerHTML = '';
+        const currentBoard = Gameboard.getBoard();
+
+        // Create 9 cells
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.textContent = currentBoard[i];
+
+            cell.addEventListener('click', () => {
+                Game.cellClicked(i);
+            });
+
+            boardElement.appendChild(cell);
+        }
+    }
+
+    // Public interface
+    return {
+        updateBoard: function() {
+            renderBoard();
+        },
+
+        updatePlayerTurn: function(message) {
+            playerTurnElement.textContent = message;
+        },
+
+        updateScores: function(xScore, oScore) {
+            scoreXElement.textContent = xScore;
+            scoreOElement.textContent = oScore;
+        },
+
+        setResetCallback: function(callback) {
+            resetButton.addEventListener('click', callback);
+        },
+    };
+})();
 
 // ====================================
-// GAME STATE
+// GAME CONTROLLER MODULE
 // ====================================
-let currentPlayer = 'X';
-let gameActive = true;
+const Game = (function() {
+    // Private game state
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let gameOver = false;
+    const WINNING_SCORE = 3;
 
-const WINNING_SCORE = 3;
-let gameOver = false;
+    // Private win detection
+    function checkWinner() {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+        ];
 
-// ====================================
-// RENDER BOARD
-// ====================================
-function renderBoard() {
-    // Clear the board element first
-    boardElement.innerHTML = '';
+        const currentBoard = Gameboard.getBoard();
 
-    // Get current board state from the module
-    const currentBoard = Gameboard.getBoard();
-
-
-// Create 9 cells
-for (let i = 0; i < 9; i++) {
-    // create cell div
-    const cell = document.createElement('div');
-    cell.classList.add('cell');
-
-    // Add the marker (X or O) if this cell is taken
-    cell.textContent = currentBoard[i];
-
-    // Add click handler
-    cell.addEventListener('click', () => handleCellClick(i));
-
-    // Add to board
-    boardElement.appendChild(cell);
-   }
-}
-
-// ====================================
-// GAME LOGIC
-// ====================================
-function handleCellClick(index) {
-    // check if cell is empty and game is active
-    // Use Gameboard.getCell() to check if empty
-    if (Gameboard.getCell(index) === '' && gameActive) {
-        
-        // Make the move using the module
-        Gameboard.makeMove(index, currentPlayer);
-
-        // Check for winner
-        const winner = checkWinner();  // We'll update this next
-        if (winner) {
-            // Update Scores
-            if (winner === 'X') {
-                playerX.increaseScore();
-                scoreXElement.textContent = playerX.getScore();
-            } else {
-                playerO.increaseScore();
-                scoreOElement.textContent = playerO.getScore();
+        for (let pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (currentBoard[a] && currentBoard[a] === currentBoard[b] && currentBoard[a] === currentBoard[c]) {
+                return currentBoard[a];
             }
+        }
+        return null;
+    }
 
-            // Check if someone won the MATCH
-            if (playerX.getScore() === WINNING_SCORE) {
-                playerTurnElement.textContent = `🏆 PLAYER X WINS THE MATCH! 🏆`;
-                gameActive = false;
-                gameOver = true;
-            } else if (playerO.getScore() === WINNING_SCORE) {
-                playerTurnElement.textContent = `🏆 PLAYER O WINS THE MATCH! 🏆`;
-                gameActive = false;
-                gameOver = true;
-            } else {
-                // Just a game win, not match win
-                playerTurnElement.textContent = `Player ${winner} wins this round! 🎉`;
-                gameActive = false;
-            }
+    // Private move handler
+    function handleMove(index) {
+        // Check if cell is empty and game is active
+        if (Gameboard.getCell(index) === '' && gameActive) {
             
-            // Update display
-            renderBoard();
-        } 
-        // Tie Check
-        else if (Gameboard.isFull()) {  // Use the module's isFull method
-            playerTurnElement.textContent = `It's a tie! 🤝`;
-            gameActive = false;
-            renderBoard();
-        } 
-        else {
-            // No winner yet, switch players
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            playerTurnElement.textContent = `Player ${currentPlayer}'s turn`;
-            renderBoard();
+            // Make the move
+            Gameboard.makeMove(index, currentPlayer);
+
+            // Check for winner
+            const winner = checkWinner();
+            if (winner) {
+                // Update scores
+                if (winner === 'X') {
+                    playerX.increaseScore();
+                } else {
+                    playerO.increaseScore();
+                }
+
+                // Check for match win
+                if (playerX.getScore() === WINNING_SCORE) {
+                    DisplayController.updatePlayerTurn(`🏆 PLAYER X WINS THE MATCH! 🏆`);
+                    gameActive = false;
+                    gameOver = true;
+                } else if (playerO.getScore() === WINNING_SCORE) {
+                    DisplayController.updatePlayerTurn(`🏆 PLAYER O WINS THE MATCH! 🏆`);
+                    gameActive = false;
+                    gameOver = true;
+                } else {
+                    DisplayController.updatePlayerTurn(`Player ${winner} wins this round! 🎉`);
+                    gameActive = false;
+                }
+                
+                // Update scores display
+                DisplayController.updateScores(playerX.getScore(), playerO.getScore());
+                DisplayController.updateBoard();
+            } 
+            // Tie check
+            else if (Gameboard.isFull()) {
+                DisplayController.updatePlayerTurn(`It's a tie! 🤝`);
+                gameActive = false;
+                DisplayController.updateBoard();
+            } 
+            else {
+                // No winner, switch players
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                DisplayController.updatePlayerTurn(`Player ${currentPlayer}'s turn`);
+                DisplayController.updateBoard();
+            }
         }
     }
-}
 
-// ====================================
-// WIN DETECTION
-// ====================================
-function checkWinner() {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-        [0, 4, 8], [2, 4, 6]             // Diagonals
-    ];
+    // Private reset
+    function resetGame() {
+        Gameboard.reset();
+        currentPlayer = 'X';
+        gameActive = true;
 
-    // Get current board from module
-    const currentBoard = Gameboard.getBoard();
-
-    for (let pattern of winPatterns) {
-        const [a, b, c] = pattern;
-
-        // Check if all three positions have the same marker and aren't empty
-        if (currentBoard[a] && currentBoard[a] === currentBoard[b] && currentBoard[a] === currentBoard[c]) {
-            return currentBoard[a];
+        if (gameOver) {
+            // Match is over - reset scores
+            playerX.resetScore();
+            playerO.resetScore();
+            DisplayController.updateScores(0, 0);
+            gameOver = false;
+            DisplayController.updatePlayerTurn(`New match! Player X's turn`);
+        } else {
+            DisplayController.updatePlayerTurn(`Player X's turn (Best of ${WINNING_SCORE})`);
         }
+        
+        DisplayController.updateBoard();
     }
 
-    return null;
-}
+    // Public interface
+    return {
+        // Called when a cell is clicked
+        cellClicked: function(index) {
+            handleMove(index);
+        },
+
+        // Called when reset button is clicked
+        resetGame: function() {
+            resetGame();
+        },
+
+        // Initialize the game
+        init: function() {
+            DisplayController.updateBoard();
+            DisplayController.updatePlayerTurn(`Player X's turn (Best of ${WINNING_SCORE})`);
+            DisplayController.updateScores(0, 0);
+            
+            // Set up reset button callback
+            DisplayController.setResetCallback(function() {
+                resetGame();
+            });
+        }
+    };
+})();
 
 // ====================================
-// RESET GAME
+// START THE GAME
 // ====================================
-function resetGame() {
-    // Use the module to reset the board
-    Gameboard.reset();
-
-    // Reset game state
-    currentPlayer = 'X';
-    gameActive = true;
-
-    // Update display
-    renderBoard();
-    
-    // Check if match is over
-    if (gameOver) {
-        // Match is over - reset everything
-        playerX.resetScore();
-        playerO.resetScore();
-        scoreXElement.textContent = '0';
-        scoreOElement.textContent = '0';
-        gameOver = false;
-        playerTurnElement.textContent = `New match! Player X's turn`;
-    } else {
-        // Just starting a new round in the same match
-        playerTurnElement.textContent = `Player X's turn (Best of ${WINNING_SCORE})`;
-    }
-}
-
-// ====================================
-// EVENT LISTENERS
-// ====================================
-resetButton.addEventListener('click', resetGame);
-
-// ====================================
-// INITIALIZE GAME
-// ====================================
-renderBoard();
+Game.init();
