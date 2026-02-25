@@ -10,15 +10,41 @@ const scoreXElement = document.getElementById('score-x');
 const scoreOElement = document.getElementById('score-o');
 
 // ====================================
+// PLAYER FACTORY
+// ====================================
+function createPlayer(name, marker) {
+    return {
+        name: name,
+        marker: marker,
+        score: 0,
+
+        // Methods (functions attached to this player)
+        increaseScore: function() {
+            this.score++;
+        },
+
+        resetScore: function() {
+            this.score = 0;
+        },
+
+        getScore: function() {
+            return this.score;
+        }
+    };
+}
+
+// Create Players
+const playerX = createPlayer('player X', 'X');
+const playerO = createPlayer('Player O', 'O');
+
+
+
+// ====================================
 // GAME STATE
 // ====================================
 const board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
-
-// score tracking
-let playerXScore = 0;
-let playerOScore = 0;
 
 const WINNING_SCORE = 3;
 let gameOver = false;
@@ -62,11 +88,11 @@ function handleCellClick(index) {
         if (winner) {
             // Update Scores
             if (winner === 'X') {
-                playerXScore++;
-                scoreXElement.textContent = playerXScore;
+                playerX.increaseScore();
+                scoreXElement.textContent = playerX.getScore();
             } else {
-                playerOScore++;
-                scoreOElement.textContent = playerOScore;
+                playerO.increaseScore();
+                scoreOElement.textContent = playerO.getScore();
             }
 
             // Check if someone won the MATCH
