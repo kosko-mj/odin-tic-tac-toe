@@ -55,6 +55,11 @@ function handleCellClick(index) {
             // Game over - someone won!
             playerTurnElement.textContent = `Player ${winner} wins! 🎉`;
             gameActive = false;
+            // Tie Check
+        } else if (!board.includes('')) {
+            // Board is full an no winner = tie
+            playerTurnElement.textContent = `It's a tie! 🤝`;
+            gameActive = false;
         } else {
             // No winner yet, switch players
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
