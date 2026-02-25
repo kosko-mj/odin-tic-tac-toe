@@ -34,15 +34,55 @@ function createPlayer(name, marker) {
 }
 
 // Create Players
-const playerX = createPlayer('player X', 'X');
+const playerX = createPlayer('Player X', 'X');
 const playerO = createPlayer('Player O', 'O');
 
+// ====================================
+// GAMEBOARD MODULE
+// ====================================
+const Gameboard = (function() {
+    // Private board - can't touch this from outside!
+    const board = ['', '', '', '', '', '', '', '', ''];
+    
+    // Public interface
+    return {
+        // Get a copy of the board (so outside can't modify original)
+        getBoard: function() {
+            return [...board]; // Spread operator creates a new array
+        },
+        
+        // Make a move - returns true if successful, false if not
+        makeMove: function(index, marker) {
+            if (board[index] === '') {
+                board[index] = marker;
+                return true;
+            }
+            return false;
+        },
+        
+        // Reset the board
+        reset: function() {
+            for (let i = 0; i < 9; i++) {
+                board[i] = '';
+            }
+        },
+        
+        // Check if board is full
+        isFull: function() {
+            return !board.includes('');
+        },
+        
+        // Get value at specific position
+        getCell: function(index) {
+            return board[index];
+        }
+    };
+})();
 
 
 // ====================================
 // GAME STATE
 // ====================================
-const board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let gameActive = true;
 
@@ -56,6 +96,9 @@ function renderBoard() {
     // Clear the board element first
     boardElement.innerHTML = '';
 
+    // Get current board state from the module
+    const currentBoard = Gameboard.getBoard();
+
 
 // Create 9 cells
 for (let i = 0; i < 9; i++) {
@@ -64,7 +107,7 @@ for (let i = 0; i < 9; i++) {
     cell.classList.add('cell');
 
     // Add the marker (X or O) if this cell is taken
-    cell.textContent = board[i];
+    cell.textContent = currentBoard[i];
 
     // Add click handler
     cell.addEventListener('click', () => handleCellClick(i));
@@ -79,12 +122,14 @@ for (let i = 0; i < 9; i++) {
 // ====================================
 function handleCellClick(index) {
     // check if cell is empty and game is active
-    if (board[index] === '' && gameActive) {
-        // Update board array
-        board[index] = currentPlayer;
+    // Use Gameboard.getCell() to check if empty
+    if (Gameboard.getCell(index) === '' && gameActive) {
+        
+        // Make the move using the module
+        Gameboard.makeMove(index, currentPlayer);
 
         // Check for winner
-        const winner = checkWinner();
+        const winner = checkWinner();  // We'll update this next
         if (winner) {
             // Update Scores
             if (winner === 'X') {
@@ -96,38 +141,33 @@ function handleCellClick(index) {
             }
 
             // Check if someone won the MATCH
-            if (playerXScore === WINNING_SCORE) {
+            if (playerX.getScore() === WINNING_SCORE) {
                 playerTurnElement.textContent = `🏆 PLAYER X WINS THE MATCH! 🏆`;
                 gameActive = false;
                 gameOver = true;
-            } else if (playerOScore === WINNING_SCORE) {
+            } else if (playerO.getScore() === WINNING_SCORE) {
                 playerTurnElement.textContent = `🏆 PLAYER O WINS THE MATCH! 🏆`;
                 gameActive = false;
                 gameOver = true;
             } else {
                 // Just a game win, not match win
                 playerTurnElement.textContent = `Player ${winner} wins this round! 🎉`;
-                gameActive = false; // Game ends, but match continues
+                gameActive = false;
             }
             
-            // Update display AFTER all logic
+            // Update display
             renderBoard();
         } 
         // Tie Check
-        else if (!board.includes('')) {
-            // Board is full and no winner = tie
+        else if (Gameboard.isFull()) {  // Use the module's isFull method
             playerTurnElement.textContent = `It's a tie! 🤝`;
             gameActive = false;
-            
-            // Update display AFTER all logic
             renderBoard();
         } 
         else {
             // No winner yet, switch players
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             playerTurnElement.textContent = `Player ${currentPlayer}'s turn`;
-            
-            // Update display AFTER all logic
             renderBoard();
         }
     }
@@ -143,12 +183,15 @@ function checkWinner() {
         [0, 4, 8], [2, 4, 6]             // Diagonals
     ];
 
+    // Get current board from module
+    const currentBoard = Gameboard.getBoard();
+
     for (let pattern of winPatterns) {
         const [a, b, c] = pattern;
 
         // Check if all three positions have the same marker and aren't empty
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
+        if (currentBoard[a] && currentBoard[a] === currentBoard[b] && currentBoard[a] === currentBoard[c]) {
+            return currentBoard[a];
         }
     }
 
@@ -159,10 +202,8 @@ function checkWinner() {
 // RESET GAME
 // ====================================
 function resetGame() {
-    // Clear board array
-    for (let i = 0; i < 9; i++) {
-        board[i] = '';
-    }
+    // Use the module to reset the board
+    Gameboard.reset();
 
     // Reset game state
     currentPlayer = 'X';
@@ -170,12 +211,12 @@ function resetGame() {
 
     // Update display
     renderBoard();
-   
+    
     // Check if match is over
     if (gameOver) {
         // Match is over - reset everything
-        playerXScore = 0;
-        playerOScore = 0;
+        playerX.resetScore();
+        playerO.resetScore();
         scoreXElement.textContent = '0';
         scoreOElement.textContent = '0';
         gameOver = false;
