@@ -3,32 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
-
+    <title>Fridge Magnet Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Game Container -->
-    <div class="container">
-        <h1>Tic Tac Toe</h1>
-
-        <!-- Player Info -->
-        <div class="player-turn">Player X's turn</div>
-
-        <!-- Score Display -->
-        <div class="score-board">
-            <div class="score-x">Player X: <span id="score-x">0</span></div>
-            <div class="score-o">Player O: <span id="score-o"></span></div>
-        </div>
+    <!-- FREEZER SECTION -->
+    <div class="freezer">
+        <div class="freezer-handle"></div>
+    </div>
+    
+    <!-- SEAL GAP -->
+    <div class="seal-gap"></div>
+    
+    <!-- FRIDGE SECTION -->
+    <div class="fridge-section">
+        <!-- Thick stainless strip at top of fridge -->
+        <div class="fridge-top-strip"></div>
         
-        <!-- Game Board -->
-        <div class="board">
-
+        <!-- Fridge handle -->
+        <div class="fridge-handle"></div>
+        
+        <!-- Content area (below the strip) -->
+        <div class="fridge-content">
+            <div class="game-container">
+                <!-- Yellow magnetic sheet - ONLY for the game -->
+                <div class="magnetic-sheet">
+                    <h1 class="game-title">Tic Tac Toe</h1>
+                    
+                    <div class="player-turn">Player X's turn</div>
+                    
+                    <div class="score-board">
+                        <div class="score-x">Player X: <span id="score-x">0</span></div>
+                        <div class="score-o">Player O: <span id="score-o">0</span></div>
+                    </div>
+                    
+                    <div class="board-container">
+                        <div class="vertical-line left"></div>
+                        <div class="vertical-line right"></div>
+                        <div class="horizontal-line top"></div>
+                        <div class="horizontal-line bottom"></div>
+                        <div class="board"></div>
+                    </div>
+                </div>
+                
+                <!-- NEW GAME magnets - ON THE FRIDGE DOOR (below the sheet) -->
+                <div class="fridge-magnets">
+                    <div class="letter-magnet" id="reset-n" style="color: #f7d44a;">N</div>
+                    <div class="letter-magnet" id="reset-e1" style="color: #6c8c5c;">E</div>
+                    <div class="letter-magnet" id="reset-w" style="color: #c44b3c;">W</div>
+                    <div class="magnet-spacer"></div>
+                    <div class="letter-magnet" id="reset-g" style="color: #3c6b8c;">G</div>
+                    <div class="letter-magnet" id="reset-a" style="color: #d49c3c;">A</div>
+                    <div class="letter-magnet" id="reset-m" style="color: #8b5a8b;">M</div>
+                    <div class="letter-magnet" id="reset-e2" style="color: #6c8c5c;">E</div>
+                </div>
+            </div>
         </div>
-
-        <!-- Button -->
-        <button class="reset">New Game</button> 
-    </div> 
+    </div>
     
     <script src="script.js"></script>
 </body>

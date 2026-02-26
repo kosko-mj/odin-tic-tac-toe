@@ -75,7 +75,6 @@ const DisplayController = (function() {
     // DOM elements (moved from global scope)
     const boardElement = document.querySelector('.board');
     const playerTurnElement = document.querySelector('.player-turn');
-    const resetButton = document.querySelector('.reset');
     const scoreXElement = document.getElementById('score-x');
     const scoreOElement = document.getElementById('score-o');
 
@@ -113,9 +112,18 @@ const DisplayController = (function() {
             scoreOElement.textContent = oScore;
         },
 
-        setResetCallback: function(callback) {
-            resetButton.addEventListener('click', callback);
-        },
+        connectResetMagnets: function() {
+            // Find all the letter magnets
+            const magnets = document.querySelectorAll('.letter-magnet');
+            
+            // Add a click handler to each one
+            magnets.forEach(magnet => {
+                magnet.addEventListener('click', function() {
+                    // When clicked, call the Game's reset function
+                    Game.resetGame();
+                });
+            });
+        }
     };
 })();
 
@@ -236,11 +244,8 @@ const Game = (function() {
             DisplayController.updateBoard();
             DisplayController.updatePlayerTurn(`Player X's turn (Best of ${WINNING_SCORE})`);
             DisplayController.updateScores(0, 0);
-            
-            // Set up reset button callback
-            DisplayController.setResetCallback(function() {
-                resetGame();
-            });
+
+            DisplayController.connectResetMagnets();
         }
     };
 })();
