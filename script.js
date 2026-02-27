@@ -88,6 +88,13 @@ const DisplayController = (function() {
             const cell = document.createElement('div');
             cell.classList.add('cell');
             cell.textContent = currentBoard[i];
+            
+            // Add magnet class based on content
+            if (currentBoard[i] === 'X') {
+                cell.classList.add('x-magnet');
+            } else if (currentBoard[i] === 'O') {
+                cell.classList.add('o-magnet');
+            }
 
             cell.addEventListener('click', () => {
                 Game.cellClicked(i);

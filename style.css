@@ -1,5 +1,5 @@
-/* ===== 1960s FRIGIDAIRE STYLING ===== */
-/* The entire browser window is the fridge! */
+/* ===== 1960s FRIDGE MAGNET TIC TAC TOE ===== */
+/* Bubble magnet style */
 
 /* ----- VARIABLES ----- */
 :root {
@@ -16,11 +16,17 @@
     /* Magnet colors */
     --magnet-red: #c44b3c;
     --magnet-blue: #3c6b8c;
+    --magnet-yellow: #f7d44a;
+    --magnet-orange: #d49c3c;
+    --magnet-purple: #8b5a8b;
     
-    /* Typography */
+    /* Typography - Updated for bubble style */
     --font-retro: 'Courier New', 'American Typewriter', monospace;
+    --font-title: 'Baloo 2', system-ui, sans-serif;
+    --font-magnet: 'Baloo 2', system-ui, sans-serif;
     
     /* Spacing */
+    --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
     --space-lg: 2rem;
@@ -34,241 +40,150 @@
     box-sizing: border-box;
 }
 
-/* The ENTIRE page is the fridge */
+/* The ENTIRE page is the fridge door */
 body {
     min-height: 100vh;
     background: var(--avocado-green);
     font-family: var(--font-retro);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-md);
     
-    /* Fridge texture (enamel finish) */
+    /* Enamel finish texture */
     background-image: 
         radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 20%),
         radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 25%);
 }
 
-/* ----- FREEZER SECTION (TOP) ----- */
-.freezer {
-    height: 140px;
-    background: linear-gradient(145deg, var(--avocado-light), var(--avocado-green));
+/* Main game container */
+.game-container {
+    max-width: 600px;
+    width: 100%;
     position: relative;
-    box-shadow: inset 0 2px 5px rgba(255,255,255,0.3);
-    
-    /* Bottom edge (where freezer door meets seal) */
-    border-bottom: 4px solid #3a3a3a;
-}
-
-/* Frigidaire logo plate */
-.freezer::after {
-    content: 'FRIGIDAIRE';
-    position: absolute;
-    bottom: 10px;
-    left: 0px;
-    background: linear-gradient(145deg, #e8e8e8, #a0a0a0);
-    color: #2c2c2c;
-    font-family: 'Arial Narrow', 'Franklin Gothic Condensed', 'Impact', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 3px;
-    font-weight: 500;
-    padding: 4px 16px;
-    border-radius: 4px;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
-    text-transform: uppercase;
-    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
-    border: 1px solid rgba(255,255,255,0.3);
-}
-
-/* Freezer handle */
-.freezer-handle {
-    position: absolute;
-    right: 10px;
-    top: -5px;
-    bottom: 15px;
-    width: 40px;
-    background: linear-gradient(90deg, #9a9a9a, #c0c0c0, #9a9a9a);
-    border-radius: 8px;
-    
-    box-shadow: 
-        -2px 0 3px rgba(0,0,0,0.2),
-        inset 1px 1px 3px rgba(255,255,255,0.5),
-        inset -1px -1px 3px rgba(0,0,0,0.2);
-}
-
-/* Round the ends of the handle */
-.freezer-handle::before,
-.freezer-handle::after {
-    content: '';
-    position: absolute;
-    left: -5px;
-    right: -5px;
-    height: 10px;
-    background: inherit;
-    border-radius: 5px;
-}
-
-.freezer-handle::before {
-    top: -5px;
-}
-
-.freezer-handle::after {
-    bottom: -5px;
-}
-
-/* ----- SEAL GAP (between freezer and fridge) ----- */
-.seal-gap {
-    height: 30px;
-    background: #2a2a2a;
-    position: relative;
-    
-    /* Rubber seal texture */
-    background-image: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(0,0,0,0.3) 20%,
-        transparent 40%,
-        transparent 60%,
-        rgba(0,0,0,0.3) 80%,
-        transparent 100%
-    );
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-}
-
-/* ----- FRIDGE SECTION (BOTTOM) ----- */
-.fridge-section {
-    flex: 1;
-    position: relative;
-    background: linear-gradient(145deg, var(--avocado-green), var(--avocado-dark));
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-/* Thick stainless steel strip at TOP of fridge section */
-.fridge-top-strip {
-    height: 60px;
-    background: linear-gradient(180deg, #b0b0b0, #909090, #7a7a7a);
-    
-    box-shadow: 
-        inset 0 1px 3px rgba(255,255,255,0.3),
-        inset 0 -1px 2px rgba(0,0,0,0.1);
-    
-    border-bottom: 1px solid #5a5a5a;
-}
-
-/* Fridge handle */
-.fridge-handle {
+/* ----- FRIDGE MAGNETS (positioned around the sheet) ----- */
+.fridge-magnet {
     position: absolute;
-    right: 10px;
-    top: 30px;
-    bottom: -5px;
-    width: 40px;
-    background: linear-gradient(90deg, #9a9a9a, #c0c0c0, #9a9a9a);
-    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.fridge-magnet.left {
+    left: calc(50% - 310px);
+    top: 45%;
+    transform: translateY(-50%);
     
-    box-shadow: 
-        -2px 0 3px rgba(0,0,0,0.2),
-        inset 1px 1px 3px rgba(255,255,255,0.5),
-        inset -1px -1px 3px rgba(0,0,0,0.2);
+    /* Tilt variables for X magnet */
+    --rotation-letter: -1.5deg;
+    --lift-letter: -2px;
+    --rotation-number: 2deg;
+    --lift-number: 3px;
 }
 
-/* Round the ends of the handle */
-.fridge-handle::before,
-.fridge-handle::after {
-    content: '';
-    position: absolute;
-    left: -5px;
-    right: -5px;
-    height: 10px;
-    background: inherit;
-    border-radius: 5px;
+.fridge-magnet.right {
+    right: calc(50% - 330px);
+    top: 40%;
+    transform: translateY(-50%);
+    
+    /* Tilt variables for O magnet */
+    --rotation-letter: 2deg;
+    --lift-letter: 1px;
+    --rotation-number: -1deg;
+    --lift-number: -2px;
 }
 
-.fridge-handle::before {
-    top: -5px;
+.fridge-magnet.left .letter-magnet {
+    transform: rotate(var(--rotation-letter)) translateY(-1px);
+    margin-top: var(--lift-letter);
 }
 
-.fridge-handle::after {
-    bottom: -5px;
+.fridge-magnet.left .number-magnet {
+    transform: rotate(var(--rotation-number)) translateY(-1px);
+    margin-top: var(--lift-number);
 }
 
-/* Container for game content */
-.fridge-content {
-    flex: 1;
-    padding: var(--space-lg) var(--space-xl) var(--space-lg) var(--space-lg);
-    position: relative;
+.fridge-magnet.right .letter-magnet {
+    transform: rotate(var(--rotation-letter)) translateY(-1px);
+    margin-top: var(--lift-letter);
 }
 
-/* Container to center the game */
-.game-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-right: 50px;
+.fridge-magnet.right .number-magnet {
+    transform: rotate(var(--rotation-number)) translateY(-1px);
+    margin-top: var(--lift-number);
 }
 
 /* ----- MAGNETIC SHEET ----- */
 .magnetic-sheet {
     background-color: var(--sheet-yellow);
-    padding: var(--space-lg);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: var(--space-md);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     
+    /* Aged plastic texture */
     background-image: 
         radial-gradient(circle at 10% 20%, rgba(0,0,0,0.02) 0%, transparent 20%),
         radial-gradient(circle at 90% 80%, rgba(0,0,0,0.02) 0%, transparent 25%);
-    position: relative;
+    width: fit-content;
+    margin: 0 auto;
 }
 
+/* ----- TITLE (printed on sheet) ----- */
 .game-title {
-    font-family: 'Impact', 'Arial Black', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 2px;
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    letter-spacing: 4px;
     color: var(--grid-brown);
-    text-align: center;
-    margin-bottom: var(--space-md);
-    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
-}
-
-/* ----- PLAYER INFO ----- */
-.player-turn {
-    font-size: 1.2rem;
-    font-weight: bold;
     text-align: center;
     margin-bottom: var(--space-sm);
-    color: var(--grid-brown);
-    background: rgba(255,255,255,0.3);
-    padding: var(--space-xs);
-    border-radius: 4px;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+    font-weight: 800;
+    
+    /* Printed/embossed look */
+    position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
-/* ----- SCORE BOARD ----- */
-.score-board {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: var(--space-md);
-    font-size: 1.1rem;
+.game-title::after {
+    content: 'TIC TAC TOE';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.3);
+    z-index: -1;
+}
+
+/* ----- PLAYER TURN (handwritten on sheet) ----- */
+.player-turn {
+    font-size: 1.3rem;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: var(--space-md);
+    color: #2c2c2c;
+    
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    
+    /* Handwritten look with a marker-style font */
+    font-family: 'Permanent Marker', 'Comic Sans MS', cursive;
+    
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-.score-x {
-    color: var(--magnet-red);
-    background: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.score-o {
-    color: var(--magnet-blue);
-    background: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* ----- GAME BOARD ----- */
+/* ----- GAME BOARD (printed grid) ----- */
 .board-container {
     position: relative;
-    margin: var(--space-lg) 0;
-    width: 100%;
+    width: 340px;
+    flex-shrink: 0;
 }
 
 .board {
@@ -278,13 +193,13 @@ body {
     background-color: transparent;
     padding: 0;
     border: none;
-    box-shadow: none;
     position: relative;
     z-index: 2;
     aspect-ratio: 1 / 1;
     width: 100%;
 }
 
+/* Printed grid lines - fat with rounded ends */
 .vertical-line {
     position: absolute;
     top: 0;
@@ -327,7 +242,7 @@ body {
     transform: translateY(-50%);
 }
 
-/* ----- CELLS (MAGNETS) ----- */
+/* ----- CELLS (game piece magnets) ----- */
 .cell {
     aspect-ratio: 1 / 1;
     background-color: transparent;
@@ -335,68 +250,156 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3rem;
-    font-weight: bold;
+    font-size: 4.5rem;
+    font-weight: 800;
     cursor: pointer;
-    box-shadow: none;
     position: relative;
     z-index: 2;
+    font-family: var(--font-magnet);
+    letter-spacing: 0.04em;
+    
+    /* Bubble plastic styling */
+    text-shadow:
+        0 -1px 0 rgba(255,255,255,0.7),
+        2px 3px 4px rgba(0,0,0,0.35);
+    transform: translateY(-1px);
+    transition: transform 0.05s ease;
 }
 
-.cell:has-text('X') {
-    background-color: var(--magnet-red);
-    color: white;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
-    border-radius: 8px;
+.cell.x-magnet {
+    color: var(--magnet-red);
 }
 
-.cell:has-text('O') {
-    background-color: var(--magnet-blue);
-    color: white;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
-    border-radius: 8px;
+.cell.o-magnet {
+    color: var(--magnet-blue);
 }
 
 .cell:empty {
     background-color: transparent;
 }
 
-/* ----- FRIDGE MAGNETS (NEW GAME letters) ----- */
+/* Press effect */
+.cell:active {
+    transform: translateY(2px);
+}
+
+/* ----- MAGNET STYLES (letters and numbers) ----- */
+.letter-magnet,
+.number-magnet {
+    font-family: var(--font-magnet);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: transparent;
+    
+    /* Bubble plastic styling */
+    text-shadow:
+        0 -1px 0 rgba(255,255,255,0.7),
+        2px 3px 4px rgba(0,0,0,0.35);
+    transition: transform 0.05s ease;
+}
+
+.letter-magnet {
+    font-size: 4.5rem;
+    cursor: pointer;
+}
+
+.number-magnet {
+    font-size: 4.5rem;
+    cursor: default;
+}
+
+.letter-magnet:active {
+    transform: translateY(2px);
+}
+
+/* ----- NEW GAME MAGNETS (below the sheet) ----- */
 .fridge-magnets {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 20px;
-    padding: 15px 10px;
-    position: relative;
-    z-index: 2;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: var(--space-sm);
     flex-wrap: wrap;
     background: transparent;
 }
 
-.letter-magnet {
-    width: auto;
-    height: auto;
-    padding: 5px 8px;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-shadow: 2px 2px 3px rgba(0,0,0,0.2);
-    font-family: 'Arial Black', 'Impact', sans-serif;
-    box-shadow: none;
-    transition: all 0.05s ease;
+/* Individual NEW GAME magnet variations */
+#reset-n { 
+    --rotation: -3deg; 
+    --lift: 6px; 
+    margin-left: 2px;
 }
 
-.letter-magnet:active {
-    transform: translateY(3px);
+#reset-e1 { 
+    --rotation: 4deg; 
+    --lift: -4px; 
+}
+
+#reset-w { 
+    --rotation: -5deg; 
+    --lift: 8px; 
+    margin-right: -3px;
+}
+
+#reset-g { 
+    --rotation: 3deg; 
+    --lift: -5px; 
+    margin-left: -2px;
+}
+
+#reset-a { 
+    --rotation: -4deg; 
+    --lift: 3px; 
+}
+
+#reset-m { 
+    --rotation: 6deg; 
+    --lift: -7px; 
+    margin-right: 4px;
+}
+
+#reset-e2 { 
+    --rotation: -5deg; 
+    --lift: 5px; 
+}
+
+#reset-n, #reset-e1, #reset-w, #reset-g, #reset-a, #reset-m, #reset-e2 {
+    transform: rotate(var(--rotation)) translateY(var(--lift));
 }
 
 .magnet-spacer {
     width: 20px;
     background: transparent;
+}
+
+/* ----- RESPONSIVE ADJUSTMENTS ----- */
+@media (max-width: 600px) {
+    .game-title {
+        font-size: 2rem;
+    }
+    
+    .cell {
+        font-size: 3.5rem;
+    }
+    
+    .letter-magnet,
+    .number-magnet {
+        font-size: 3.5rem;  /* Match the game pieces on mobile */
+    }
+    
+    .board-container {
+        width: 280px;
+    }
+    
+    .fridge-magnet.left {
+        left: calc(50% - 250px);
+        top: 45%;
+    }
+    
+    .fridge-magnet.right {
+        right: calc(50% - 270px);
+        top: 55%;
+    }
 }
